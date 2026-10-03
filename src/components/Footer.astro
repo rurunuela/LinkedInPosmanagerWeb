@@ -1,0 +1,28 @@
+---
+import siteConfig from "@config";
+const currentYear = new Date().getFullYear();
+const linkClass =
+  "hover:text-blue-600 hover:underline dark:hover:text-blue-400";
+---
+
+<footer
+  class="mx-auto my-8 flex max-w-5xl flex-col items-center justify-between gap-3 rounded-lg bg-white px-8 py-6 text-sm text-gray-600 shadow-sm sm:flex-row dark:bg-gray-900 dark:text-gray-400"
+>
+  <p class="text-center">
+    © {currentYear}&nbsp;{siteConfig.title}, édité par{" "}
+    <a
+      href={siteConfig.publisher.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="font-semibold text-gray-800 hover:text-blue-600 hover:underline dark:text-gray-200 dark:hover:text-blue-400"
+    >
+      {siteConfig.publisher.name}
+    </a>
+  </p>
+  <nav aria-label="Liens légaux" class="flex flex-wrap justify-center gap-4">
+    <a href="/beta" class={linkClass}>Bêta</a>
+    <a href="/confidentialite" class={linkClass}>Confidentialité</a>
+    <a href="/mentions-legales" class={linkClass}>Mentions légales</a>
+    <a href={`mailto:${siteConfig.email}`} class={linkClass}>Contact</a>
+  </nav>
+</footer>

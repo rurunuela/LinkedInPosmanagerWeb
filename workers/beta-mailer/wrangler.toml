@@ -1,0 +1,17 @@
+name = "linkedinpostmanager-beta-mailer"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+[observability]
+enabled = true
+
+[vars]
+ALLOWED_ORIGINS = "https://linkedinpostmanager.hubosoft.fr,http://localhost:4321"
+BETA_RECIPIENT = "hubosoft44@gmail.com"
+BETA_SENDER = "no-reply@hubosoft.fr"
+
+# Secret à définir avec : npx wrangler secret put TURNSTILE_SECRET_KEY
+
+[[send_email]]
+name = "BETA_EMAIL"
+destination_address = "hubosoft44@gmail.com"

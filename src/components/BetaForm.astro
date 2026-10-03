@@ -1,0 +1,328 @@
+---
+import siteConfig from "@config";
+import {
+  PUBLIC_BETA_FORM_ENDPOINT,
+  PUBLIC_TURNSTILE_SITE_KEY,
+} from "astro:env/client";
+
+interface Props {
+  successMessage?: string;
+  buttonLabel?: string;
+  class?: string;
+}
+
+const {
+  successMessage = "Merci ! Votre demande est bien arrivée. Vous recevrez l’invitation TestFlight par email dès qu’elle sera validée.",
+  buttonLabel = "Demander mon accès bêta",
+  class: className,
+} = Astro.props;
+
+const endpoint = PUBLIC_BETA_FORM_ENDPOINT ?? "";
+const turnstileSiteKey = PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const hasTurnstile = Boolean(turnstileSiteKey);
+const turnstileContainerId = "beta-turnstile-widget";
+const turnstileSectionId = "beta-turnstile-section";
+
+const labelClass =
+  "mb-1.5 block text-sm font-medium text-gray-800 dark:text-gray-200";
+const fieldClass =
+  "w-full rounded-md border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-colors focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-blue-400";
+---
+
+<form
+  id="beta-form"
+  action={endpoint}
+  method="POST"
+  class:list={["space-y-5", className]}
+  data-success-message={successMessage}
+  data-button-label={buttonLabel}
+  data-fallback-email={siteConfig.email}
+>
+  <div>
+    <label for="beta-name" class={labelClass}>Nom</label>
+    <input
+      id="beta-name"
+      name="name"
+      type="text"
+      required
+      minlength="2"
+      maxlength="100"
+      autocomplete="name"
+      placeholder="Votre nom"
+      class={fieldClass}
+    />
+  </div>
+
+  <div>
+    <label for="beta-email" class={labelClass}>Email de votre compte Apple</label>
+    <input
+      id="beta-email"
+      name="email"
+      type="email"
+      required
+      maxlength="200"
+      autocomplete="email"
+      placeholder="vous@exemple.fr"
+      aria-describedby="beta-email-help"
+      class={fieldClass}
+    />
+    <p
+      id="beta-email-help"
+      class="mt-1.5 text-xs leading-relaxed text-gray-500 dark:text-gray-400"
+    >
+      Utilisez l’adresse de votre identifiant Apple : c’est elle qui reçoit
+      l’invitation TestFlight.
+    </p>
+  </div>
+
+  <div>
+    <label for="beta-message" class={labelClass}>
+      Message <span class="font-normal text-gray-500 dark:text-gray-400"
+        >(facultatif)</span
+      >
+    </label>
+    <textarea
+      id="beta-message"
+      name="message"
+      rows="5"
+      maxlength="3000"
+      placeholder="Comment publiez-vous sur LinkedIn aujourd’hui ? Qu’attendez-vous de l’application ?"
+      class={fieldClass}></textarea>
+  </div>
+
+  <label class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+    <input
+      type="checkbox"
+      name="consent"
+      value="yes"
+      required
+      class="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+    />
+    <span>
+      J’accepte que mes données soient utilisées pour traiter ma demande
+      d’accès à la bêta et m’envoyer l’invitation TestFlight, conformément à la{" "}
+      <a
+        href="/confidentialite"
+        class="text-blue-600 hover:underline dark:text-blue-400"
+        >politique de confidentialité</a
+      >.
+    </span>
+  </label>
+
+  <!-- Honeypot field for spam protection -->
+  <div class="hidden" aria-hidden="true">
+    <input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
+  </div>
+
+  {
+    hasTurnstile && (
+      <div id={turnstileSectionId} class="hidden space-y-2">
+        <div id={turnstileContainerId} />
+        <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+          Protection anti-spam activée via Cloudflare Turnstile.
+        </p>
+      </div>
+    )
+  }
+
+  <div id="beta-form-message" class="hidden text-sm" role="status"></div>
+
+  <button
+    type="submit"
+    id="beta-submit-button"
+    class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-blue-500 dark:hover:bg-blue-400"
+  >
+    {buttonLabel}
+  </button>
+</form>
+
+<script
+  is:inline
+  define:vars={{
+    TURNSTILE_SITE_KEY: turnstileSiteKey,
+    TURNSTILE_CONTAINER_ID: turnstileContainerId,
+    TURNSTILE_SECTION_ID: turnstileSectionId,
+  }}
+>
+  const TURNSTILE_SCRIPT_SRC =
+    "https://challenges.cloudflare.com/turnstile/v0/api.js";
+
+  function getTurnstileApi() {
+    return window.turnstile;
+  }
+
+  function loadTurnstileScript() {
+    if (!TURNSTILE_SITE_KEY || getTurnstileApi()) return Promise.resolve();
+
+    const existingScript = document.querySelector(
+      `script[src="${TURNSTILE_SCRIPT_SRC}"]`,
+    );
+    if (existingScript?.dataset.loaded === "true") return Promise.resolve();
+
+    return new Promise((resolve, reject) => {
+      const script = existingScript || document.createElement("script");
+      script.addEventListener(
+        "load",
+        () => {
+          script.dataset.loaded = "true";
+          resolve();
+        },
+        { once: true },
+      );
+      script.addEventListener(
+        "error",
+        () => reject(new Error("Impossible de charger Turnstile")),
+        { once: true },
+      );
+      if (!existingScript) {
+        script.src = TURNSTILE_SCRIPT_SRC;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    });
+  }
+
+  function ensureTurnstileRendered() {
+    const container = document.getElementById(TURNSTILE_CONTAINER_ID);
+    const turnstileApi = getTurnstileApi();
+    if (!container || !turnstileApi) return;
+    if (container.dataset.widgetBound === "true") return;
+
+    container.innerHTML = "";
+    container.dataset.widgetBound = "true";
+    window.__betaTurnstileWidgetId = turnstileApi.render(container, {
+      sitekey: TURNSTILE_SITE_KEY,
+      appearance: "interaction-only",
+      execution: "render",
+      theme: document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light",
+    });
+  }
+
+  async function waitForTurnstile() {
+    if (!TURNSTILE_SITE_KEY) return;
+    try {
+      await loadTurnstileScript();
+    } catch {
+      return;
+    }
+    ensureTurnstileRendered();
+  }
+
+  function hasValidRequiredFields(form) {
+    return Array.from(form.querySelectorAll("[name][required]")).every(
+      (field) => field.checkValidity(),
+    );
+  }
+
+  function updateTurnstileVisibility(form) {
+    if (!TURNSTILE_SITE_KEY) return;
+    const section = document.getElementById(TURNSTILE_SECTION_ID);
+    if (!section) return;
+
+    const shouldShow = hasValidRequiredFields(form);
+    section.classList.toggle("hidden", !shouldShow);
+    if (shouldShow) waitForTurnstile();
+  }
+
+  function showMessage(element, text, isError) {
+    element.textContent = text;
+    element.className = isError
+      ? "text-sm text-red-600 dark:text-red-400"
+      : "rounded-md bg-green-50 p-3 text-sm text-green-800 dark:bg-green-950/40 dark:text-green-300";
+  }
+
+  function initBetaForm() {
+    const form = document.getElementById("beta-form");
+    const button = document.getElementById("beta-submit-button");
+    const message = document.getElementById("beta-form-message");
+
+    if (!form || !button || !message || form.dataset.bound === "true") return;
+    form.dataset.bound = "true";
+    window.__betaTurnstileWidgetId = undefined;
+
+    const successMessage = form.dataset.successMessage;
+    const buttonLabel = form.dataset.buttonLabel;
+    const fallbackEmail = form.dataset.fallbackEmail;
+
+    form.addEventListener("input", () => updateTurnstileVisibility(form));
+    form.addEventListener("change", () => updateTurnstileVisibility(form));
+    updateTurnstileVisibility(form);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!form.reportValidity()) {
+        updateTurnstileVisibility(form);
+        return;
+      }
+
+      if (!form.getAttribute("action")) {
+        showMessage(
+          message,
+          `Le formulaire n’est pas encore actif. Écrivez-nous à ${fallbackEmail} pour recevoir votre invitation.`,
+          true,
+        );
+        return;
+      }
+
+      const formData = new FormData(form);
+      if (
+        document.getElementById(TURNSTILE_CONTAINER_ID) &&
+        !formData.get("cf-turnstile-response")
+      ) {
+        showMessage(
+          message,
+          "Veuillez valider la protection anti-spam avant l’envoi.",
+          true,
+        );
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Envoi en cours…";
+      message.classList.add("hidden");
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+        });
+
+        let data = {};
+        try {
+          data = await response.json();
+        } catch {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        }
+
+        if (response.ok && data.success) {
+          showMessage(message, successMessage, false);
+          form.reset();
+          updateTurnstileVisibility(form);
+          getTurnstileApi()?.reset?.(window.__betaTurnstileWidgetId);
+        } else {
+          const errors = data.errors
+            ? Object.values(data.errors).flat().join(", ")
+            : `Une erreur est survenue (HTTP ${response.status})`;
+          showMessage(message, errors, true);
+        }
+      } catch {
+        showMessage(
+          message,
+          `Impossible d’envoyer la demande pour le moment. Vous pouvez écrire à ${fallbackEmail}.`,
+          true,
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = buttonLabel;
+        message.classList.remove("hidden");
+      }
+    });
+  }
+
+  initBetaForm();
+  document.addEventListener("astro:page-load", initBetaForm);
+</script>

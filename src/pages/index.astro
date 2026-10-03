@@ -1,0 +1,258 @@
+---
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import PostCard from "../components/PostCard.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import mainView from "../assets/screenshots/vue-principale-publications.png";
+import autoPublishSettings from "../assets/screenshots/reglages-publication-automatique.png";
+import macosSettings from "../assets/screenshots/reglages-integration-macos.png";
+
+const latestPosts = (await getCollection("blog"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+const features = [
+  {
+    icon: "lucide:pen-line",
+    title: "Un éditeur pensé pour LinkedIn",
+    description:
+      "Titre interne, texte jusqu’à 3 000 caractères, tags, image ou PDF, et un aperçu avant d’enregistrer.",
+  },
+  {
+    icon: "lucide:calendar-clock",
+    title: "Brouillon, programmé ou publié",
+    description:
+      "Gardez une idée en brouillon, programmez-la à la minute près ou publiez-la tout de suite.",
+  },
+  {
+    icon: "lucide:calendar-days",
+    title: "Liste ou agenda",
+    description:
+      "Suivez votre ligne éditoriale en liste, ou dans un agenda mensuel avec une chronologie heure par heure.",
+  },
+  {
+    icon: "lucide:tags",
+    title: "Tags et filtres",
+    description:
+      "Classez vos contenus par thème et filtrez-les par statut : brouillon, planifié, publié ou en échec.",
+  },
+  {
+    icon: "lucide:copy",
+    title: "Duplication et republication",
+    description:
+      "Réutilisez un post qui a bien marché, ouvrez directement une publication en ligne sur LinkedIn.",
+  },
+  {
+    icon: "lucide:cloud",
+    title: "Synchronisé avec iCloud",
+    description:
+      "Publications, tags et médias sont stockés dans votre iCloud privé, avec un cache local.",
+  },
+] as const;
+
+const autoRules = [
+  "Vérification chaque minute des publications arrivées à échéance",
+  "Espacement minimal entre deux publications",
+  "Tolérance de retard et nombre maximal de rattrapages",
+  "Erreurs visibles, contenus trop anciens signalés « En retard »",
+] as const;
+---
+
+<BaseLayout pageTitle="Programmez vos posts LinkedIn depuis votre Mac">
+  <section class="text-center">
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold tracking-wide text-blue-700 uppercase dark:bg-blue-950/60 dark:text-blue-300"
+    >
+      <Icon name="lucide:flask-conical" class="h-3.5 w-3.5" />
+      Bêta ouverte sur TestFlight
+    </span>
+    <h1 class="mx-auto mt-5 max-w-3xl text-4xl leading-tight sm:text-5xl">
+      Préparez, programmez et publiez sur LinkedIn, sans quitter votre Mac.
+    </h1>
+    <p
+      class="mx-auto max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-400"
+    >
+      LinkedinPostManager est une application macOS native qui réunit vos
+      brouillons, votre calendrier éditorial et la publication automatique au
+      même endroit.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a
+        href="/beta"
+        class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99] dark:bg-blue-500 dark:hover:bg-blue-400"
+      >
+        Rejoindre la bêta
+        <Icon name="lucide:arrow-right" class="h-4 w-4" />
+      </a>
+      <a
+        href="/fonctionnalites"
+        class="inline-flex items-center gap-2 rounded-md border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-800 transition hover:border-blue-600 hover:text-blue-600 dark:border-gray-700 dark:text-gray-200 dark:hover:border-blue-400 dark:hover:text-blue-400"
+      >
+        Voir les fonctionnalités
+      </a>
+    </div>
+
+    <figure class="mt-12">
+      <Image
+        src={mainView}
+        alt="Fenêtre principale de LinkedinPostManager : barre latérale avec les statuts et les tags, liste des publications et éditeur"
+        widths={[600, 900, 1200]}
+        sizes="(min-width: 1024px) 900px, 100vw"
+        loading="eager"
+        class="w-full rounded-lg border border-gray-200 shadow-lg dark:border-gray-800"
+      />
+      <figcaption class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+        Vue principale : statuts, tags, liste des publications et éditeur.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="mt-20" aria-labelledby="features-heading">
+    <h2 id="features-heading" class="text-center">
+      Tout votre calendrier LinkedIn au même endroit
+    </h2>
+    <p
+      class="mx-auto mb-10 max-w-2xl text-center text-gray-600 dark:text-gray-400"
+    >
+      De l’idée au post publié, chaque contenu suit un parcours clair.
+    </p>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((feature) => (
+          <article class="rounded-md border border-gray-100 p-6 transition-colors hover:border-blue-500/30 hover:bg-blue-50/20 dark:border-gray-800 dark:hover:border-blue-500/30 dark:hover:bg-blue-950/20">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+              <Icon name={feature.icon} class="h-5 w-5" />
+            </span>
+            <h3 class="mt-4 text-lg">{feature.title}</h3>
+            <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+              {feature.description}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section
+    class="mt-20 grid items-center gap-10 lg:grid-cols-2"
+    aria-labelledby="auto-heading"
+  >
+    <div>
+      <p
+        class="text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400"
+      >
+        Publication automatique
+      </p>
+      <h2 id="auto-heading" class="mt-3">Votre Mac publie à l’heure prévue</h2>
+      <p class="text-gray-600 dark:text-gray-400">
+        Le mode serveur surveille vos publications programmées et les envoie à
+        LinkedIn dans l’ordre, en commençant par la plus ancienne. Vous gardez
+        la main sur le rythme.
+      </p>
+      <ul class="mt-5 space-y-3">
+        {
+          autoRules.map((rule) => (
+            <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+              <Icon
+                name="lucide:circle-check"
+                class="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400"
+              />
+              <span>{rule}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+        Pour publier automatiquement, le Mac doit rester allumé, l’application
+        ouverte et le compte LinkedIn connecté.
+      </p>
+    </div>
+    <Image
+      src={autoPublishSettings}
+      alt="Réglages de la publication automatique : intervalle minimal, tolérance de retard et nombre maximal de rattrapages"
+      widths={[520, 1040]}
+      sizes="(min-width: 1024px) 460px, 100vw"
+      class="w-full rounded-lg border border-gray-200 shadow-md dark:border-gray-800"
+    />
+  </section>
+
+  <section
+    class="mt-20 grid items-center gap-10 lg:grid-cols-2"
+    aria-labelledby="macos-heading"
+  >
+    <Image
+      src={macosSettings}
+      alt="Réglages d’intégration à macOS : lancement à l’ouverture de session, Dock et barre des menus"
+      widths={[520, 1040]}
+      sizes="(min-width: 1024px) 460px, 100vw"
+      class="order-last w-full rounded-lg border border-gray-200 shadow-md lg:order-first dark:border-gray-800"
+    />
+    <div>
+      <p
+        class="text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400"
+      >
+        Intégré à macOS
+      </p>
+      <h2 id="macos-heading" class="mt-3">Toujours à portée de clic</h2>
+      <p class="text-gray-600 dark:text-gray-400">
+        Lancez l’application à l’ouverture de session et gardez-la dans le
+        Dock, la barre des menus, ou les deux. Le menu résume les publications
+        du jour et signale les contenus en retard.
+      </p>
+    </div>
+  </section>
+
+  <section
+    class="mt-20 rounded-lg bg-gray-50 p-6 sm:p-8 dark:bg-gray-950/40"
+    aria-labelledby="privacy-heading"
+  >
+    <div class="flex items-start gap-4">
+      <span
+        class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
+      >
+        <Icon name="lucide:shield-check" class="h-5 w-5" />
+      </span>
+      <div>
+        <h2 id="privacy-heading" class="text-xl">Vos données restent chez vous</h2>
+        <p class="mb-0 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+          Les identifiants LinkedIn sont stockés dans le Trousseau macOS, vos
+          publications dans votre base iCloud privée. L’application se connecte
+          directement à LinkedIn via OAuth, sans serveur tiers entre les deux.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section
+    class="mt-20 rounded-lg bg-blue-600 p-8 text-center text-white sm:p-12 dark:bg-blue-700"
+  >
+    <h2 class="text-white dark:text-white">Testez la bêta dès maintenant</h2>
+    <p class="mx-auto max-w-xl text-blue-50">
+      Demandez votre accès : vous recevrez le lien TestFlight par email une fois
+      votre demande validée.
+    </p>
+    <a
+      href="/beta"
+      class="mt-6 inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.99]"
+    >
+      Demander mon accès
+      <Icon name="lucide:arrow-right" class="h-4 w-4" />
+    </a>
+  </section>
+
+  {
+    latestPosts.length > 0 && (
+      <section class="mt-20" aria-labelledby="latest-posts-heading">
+        <h2 id="latest-posts-heading" class="mb-6 text-2xl">
+          Dernières nouvelles
+        </h2>
+        <div class="flex flex-col gap-6">
+          {latestPosts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

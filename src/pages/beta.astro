@@ -1,0 +1,151 @@
+---
+import siteConfig from "@config";
+import { Icon } from "astro-icon/components";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BetaForm from "../components/BetaForm.astro";
+
+const steps = [
+  {
+    title: "Vous envoyez votre demande",
+    description:
+      "Indiquez votre nom et l’email de votre identifiant Apple, et éventuellement quelques mots sur votre usage de LinkedIn.",
+  },
+  {
+    title: "Je valide votre accès",
+    description:
+      "Chaque demande est relue à la main afin de garder un groupe de testeurs restreint et des retours de qualité.",
+  },
+  {
+    title: "Vous recevez l’invitation TestFlight",
+    description:
+      "Un email d’Apple vous invite à installer TestFlight sur votre Mac, puis la bêta de LinkedinPostManager.",
+  },
+] as const;
+
+const requirements = [
+  "Un Mac avec un compte iCloud actif, pour la synchronisation",
+  "L’app TestFlight, disponible gratuitement sur le Mac App Store",
+  "Un compte LinkedIn",
+  "Une application LinkedIn Developers (Client ID et Client Secret) : l’app vous guide pour la déclarer",
+] as const;
+---
+
+<BaseLayout
+  pageTitle="Rejoindre la bêta"
+  description="Demandez votre accès à la bêta TestFlight de LinkedinPostManager, l’application macOS pour programmer et publier sur LinkedIn."
+>
+  <header class="mb-10 border-b border-gray-300 pb-8 dark:border-gray-700">
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold tracking-wide text-blue-700 uppercase dark:bg-blue-950/60 dark:text-blue-300"
+    >
+      <Icon name="lucide:flask-conical" class="h-3.5 w-3.5" />
+      Bêta TestFlight
+    </span>
+    <h1 class="mt-4">Rejoindre la bêta</h1>
+    <p
+      class="max-w-3xl text-base leading-relaxed text-gray-600 dark:text-gray-400"
+    >
+      LinkedinPostManager est en test. Si vous publiez régulièrement sur
+      LinkedIn et que vous travaillez sur Mac, vos retours m’aideront à
+      finaliser l’application. Remplissez le formulaire : je vous envoie le
+      lien TestFlight dès que votre demande est validée.
+    </p>
+  </header>
+
+  <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+    <section
+      class="rounded-lg border border-gray-200 p-6 sm:p-8 dark:border-gray-800"
+      aria-labelledby="beta-form-heading"
+    >
+      <h2 id="beta-form-heading" class="text-2xl">Demande d’accès</h2>
+      <p class="mb-6 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+        Deux champs suffisent. Le message est facultatif, mais il m’aide à
+        comprendre votre façon de publier.
+      </p>
+      <BetaForm />
+    </section>
+
+    <div class="space-y-6">
+      <section
+        class="rounded-lg border border-gray-200 p-6 dark:border-gray-800"
+      >
+        <p
+          class="text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400"
+        >
+          Comment ça se passe
+        </p>
+        <ol class="mt-5 space-y-5">
+          {
+            steps.map((step, index) => (
+              <li class="flex gap-4">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white dark:bg-blue-500">
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 class="mb-1 text-base font-semibold">{step.title}</h3>
+                  <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                    {step.description}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section
+        class="rounded-lg border border-gray-200 p-6 dark:border-gray-800"
+      >
+        <p
+          class="text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400"
+        >
+          Avant de commencer
+        </p>
+        <ul class="mt-5 space-y-3">
+          {
+            requirements.map((item) => (
+              <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                <Icon
+                  name="lucide:circle-check"
+                  class="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400"
+                />
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section
+        class="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950/40"
+      >
+        <h2 class="text-lg">Ce que j’attends des testeurs</h2>
+        <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+          Utiliser l’app pour de vraies publications, signaler les bugs via
+          TestFlight et partager vos idées. Les données affichées peuvent
+          évoluer d’une version à l’autre : gardez une copie de vos textes
+          importants.
+        </p>
+      </section>
+
+      <section
+        class="flex items-start gap-4 rounded-lg border border-gray-200 p-6 dark:border-gray-800"
+      >
+        <span
+          class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"
+        >
+          <Icon name="lucide:mail" class="h-5 w-5" />
+        </span>
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Une question sur la bêta ?
+          </p>
+          <a
+            class="font-medium text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
+            href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a
+          >
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
