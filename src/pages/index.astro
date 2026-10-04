@@ -1,23 +1,21 @@
 ---
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import PostCard from "../components/PostCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import mainView from "../assets/screenshots/vue-principale-publications.png";
+import { productFacts, softwareApplication } from "../lib/seo";
+import Screenshot from "../components/Screenshot.astro";
+import agendaView from "../assets/screenshots/agenda-publications-mock.png";
+import listView from "../assets/screenshots/vue-liste-recadree.png";
+import postPreview from "../assets/screenshots/apercu-publication-avec-image.png";
 import autoPublishSettings from "../assets/screenshots/reglages-publication-automatique.png";
 import macosSettings from "../assets/screenshots/reglages-integration-macos.png";
-
-const latestPosts = (await getCollection("blog"))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 2);
 
 const features = [
   {
     icon: "lucide:pen-line",
     title: "Un éditeur pensé pour LinkedIn",
     description:
-      "Titre interne, texte jusqu’à 3 000 caractères, tags, image ou PDF, et un aperçu avant d’enregistrer.",
+      "Titre interne, texte jusqu’à 3 000 caractères avec compteur, tags, image ou PDF, et un aperçu avant d’enregistrer.",
   },
   {
     icon: "lucide:calendar-clock",
@@ -57,9 +55,17 @@ const autoRules = [
   "Tolérance de retard et nombre maximal de rattrapages",
   "Erreurs visibles, contenus trop anciens signalés « En retard »",
 ] as const;
+
+const eyebrowClass =
+  "text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400";
 ---
 
-<BaseLayout pageTitle="Programmez vos posts LinkedIn depuis votre Mac">
+<BaseLayout
+  pageTitle="Accueil"
+  metaTitle="LinkedinPostManager : programmer et publier ses posts LinkedIn depuis un Mac"
+  description="LinkedinPostManager est une application macOS native (macOS 14.6+) pour rédiger, programmer et publier automatiquement vos posts LinkedIn via l’API officielle. Bêta ouverte sur TestFlight."
+  jsonLd={[softwareApplication()]}
+>
   <section class="text-center">
     <span
       class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold tracking-wide text-blue-700 uppercase dark:bg-blue-950/60 dark:text-blue-300"
@@ -92,20 +98,35 @@ const autoRules = [
         Voir les fonctionnalités
       </a>
     </div>
+    <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">
+      macOS 14.6 ou ultérieur · API officielles LinkedIn et Apple
+    </p>
 
-    <figure class="mt-12">
+    <div
+      class="relative mt-12 overflow-hidden rounded-2xl bg-linear-to-br from-blue-100 via-sky-50 to-indigo-100 px-4 pt-8 pb-8 ring-1 ring-blue-900/5 ring-inset sm:px-10 sm:pt-12 lg:pb-28 dark:from-blue-950/70 dark:via-gray-900 dark:to-indigo-950/70 dark:ring-white/5"
+    >
       <Image
-        src={mainView}
-        alt="Fenêtre principale de LinkedinPostManager : barre latérale avec les statuts et les tags, liste des publications et éditeur"
-        widths={[600, 900, 1200]}
-        sizes="(min-width: 1024px) 900px, 100vw"
+        src={agendaView}
+        alt="Vue Agenda de LinkedinPostManager : calendrier mensuel avec des publications programmées et chronologie de la journée"
+        widths={[640, 760, 1284]}
+        sizes="(min-width: 1024px) 760px, 100vw"
         loading="eager"
-        class="w-full rounded-lg border border-gray-200 shadow-lg dark:border-gray-800"
+        class="mx-auto w-full max-w-[760px] drop-shadow-2xl lg:mr-auto lg:ml-0"
       />
-      <figcaption class="mt-3 text-xs text-gray-500 dark:text-gray-400">
-        Vue principale : statuts, tags, liste des publications et éditeur.
-      </figcaption>
-    </figure>
+      <Image
+        src={postPreview}
+        alt="Aperçu d’un post LinkedIn avec image, tel qu’il apparaîtra une fois publié"
+        widths={[380, 760]}
+        sizes="380px"
+        loading="eager"
+        class="absolute right-8 bottom-6 hidden w-[380px] drop-shadow-2xl lg:block"
+      />
+    </div>
+    <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+      La vue Agenda<span class="hidden lg:inline"
+        >{" "}et l’aperçu d’un post avant publication</span
+      >{" "}(données de démonstration).
+    </p>
   </section>
 
   <section class="mt-20" aria-labelledby="features-heading">
@@ -135,15 +156,38 @@ const autoRules = [
   </section>
 
   <section
-    class="mt-20 grid items-center gap-10 lg:grid-cols-2"
-    aria-labelledby="auto-heading"
+    class="mt-20 grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]"
+    aria-labelledby="list-heading"
   >
     <div>
-      <p
-        class="text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400"
-      >
-        Publication automatique
+      <p class={eyebrowClass}>Organisation</p>
+      <h2 id="list-heading" class="mt-3">Votre ligne éditoriale d’un coup d’œil</h2>
+      <p class="text-gray-600 dark:text-gray-400">
+        Compteurs par statut, tags colorés, date de programmation et média
+        joint : la vue Liste montre l’essentiel de chaque post. Un échec reste
+        visible avec son message, pour corriger et reprogrammer en un clic.
       </p>
+    </div>
+    <Screenshot
+      src={listView}
+      alt="Vue Liste : statuts et tags dans la barre latérale, publications avec leur date, leur statut et leur tag"
+      maxWidth={520}
+      class="!my-0"
+    />
+  </section>
+
+  <section
+    class="mt-20 grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]"
+    aria-labelledby="auto-heading"
+  >
+    <Screenshot
+      src={autoPublishSettings}
+      alt="Réglages de la publication automatique : intervalle minimal, tolérance de retard et nombre maximal de rattrapages"
+      maxWidth={480}
+      class="order-last !my-0 lg:order-first"
+    />
+    <div>
+      <p class={eyebrowClass}>Publication automatique</p>
       <h2 id="auto-heading" class="mt-3">Votre Mac publie à l’heure prévue</h2>
       <p class="text-gray-600 dark:text-gray-400">
         Le mode serveur surveille vos publications programmées et les envoie à
@@ -164,36 +208,18 @@ const autoRules = [
         }
       </ul>
       <p class="mt-5 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-        Pour publier automatiquement, le Mac doit rester allumé, l’application
-        ouverte et le compte LinkedIn connecté.
+        Pour publier automatiquement, le Mac doit rester allumé et connecté,
+        l’application ouverte et le compte LinkedIn connecté.
       </p>
     </div>
-    <Image
-      src={autoPublishSettings}
-      alt="Réglages de la publication automatique : intervalle minimal, tolérance de retard et nombre maximal de rattrapages"
-      widths={[520, 1040]}
-      sizes="(min-width: 1024px) 460px, 100vw"
-      class="w-full rounded-lg border border-gray-200 shadow-md dark:border-gray-800"
-    />
   </section>
 
   <section
-    class="mt-20 grid items-center gap-10 lg:grid-cols-2"
+    class="mt-20 grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]"
     aria-labelledby="macos-heading"
   >
-    <Image
-      src={macosSettings}
-      alt="Réglages d’intégration à macOS : lancement à l’ouverture de session, Dock et barre des menus"
-      widths={[520, 1040]}
-      sizes="(min-width: 1024px) 460px, 100vw"
-      class="order-last w-full rounded-lg border border-gray-200 shadow-md lg:order-first dark:border-gray-800"
-    />
     <div>
-      <p
-        class="text-xs font-semibold tracking-[0.18em] text-blue-600 uppercase dark:text-blue-400"
-      >
-        Intégré à macOS
-      </p>
+      <p class={eyebrowClass}>Intégré à macOS</p>
       <h2 id="macos-heading" class="mt-3">Toujours à portée de clic</h2>
       <p class="text-gray-600 dark:text-gray-400">
         Lancez l’application à l’ouverture de session et gardez-la dans le
@@ -201,6 +227,35 @@ const autoRules = [
         du jour et signale les contenus en retard.
       </p>
     </div>
+    <Screenshot
+      src={macosSettings}
+      alt="Réglages d’intégration à macOS : lancement à l’ouverture de session, Dock et barre des menus"
+      maxWidth={480}
+      class="!my-0"
+    />
+  </section>
+
+  <section class="mt-20" aria-labelledby="facts-heading">
+    <h2 id="facts-heading" class="text-2xl">LinkedinPostManager en bref</h2>
+    <dl
+      class="mt-6 grid gap-px overflow-hidden rounded-lg border border-gray-200 bg-gray-200 text-sm sm:grid-cols-2 dark:border-gray-800 dark:bg-gray-800"
+    >
+      {
+        [
+          ["Ce que c’est", productFacts.summary],
+          ["Plateforme", productFacts.platform],
+          ["Statut", productFacts.status],
+          ["Éditeur", `${productFacts.publisher} (La Chapelle-sur-Erdre, France)`],
+          ["Connexion LinkedIn", "OAuth et API officiels de LinkedIn, sans automatisation de navigateur"],
+          ["Données", "Trousseau macOS pour les identifiants, base iCloud privée pour les publications"],
+        ].map(([term, value]) => (
+          <div class="bg-white p-4 dark:bg-gray-900">
+            <dt class="font-semibold text-gray-900 dark:text-gray-100">{term}</dt>
+            <dd class="mt-1 text-gray-600 dark:text-gray-400">{value}</dd>
+          </div>
+        ))
+      }
+    </dl>
   </section>
 
   <section
@@ -214,11 +269,14 @@ const autoRules = [
         <Icon name="lucide:shield-check" class="h-5 w-5" />
       </span>
       <div>
-        <h2 id="privacy-heading" class="text-xl">Vos données restent chez vous</h2>
+        <h2 id="privacy-heading" class="text-xl">
+          API officielles, données chez vous
+        </h2>
         <p class="mb-0 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-          Les identifiants LinkedIn sont stockés dans le Trousseau macOS, vos
-          publications dans votre base iCloud privée. L’application se connecte
-          directement à LinkedIn via OAuth, sans serveur tiers entre les deux.
+          L’application s’authentifie via l’OAuth officiel de LinkedIn et
+          publie directement par son API : aucun automatisme de navigateur, ni
+          extraction de pages. Les identifiants sont rangés dans le Trousseau
+          macOS, vos publications dans votre base iCloud privée.
         </p>
       </div>
     </div>
@@ -232,27 +290,20 @@ const autoRules = [
       Demandez votre accès : vous recevrez le lien TestFlight par email une fois
       votre demande validée.
     </p>
-    <a
-      href="/beta"
-      class="mt-6 inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.99]"
-    >
-      Demander mon accès
-      <Icon name="lucide:arrow-right" class="h-4 w-4" />
-    </a>
+    <div class="mt-6 flex flex-wrap justify-center gap-3">
+      <a
+        href="/beta"
+        class="inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.99]"
+      >
+        Demander mon accès
+        <Icon name="lucide:arrow-right" class="h-4 w-4" />
+      </a>
+      <a
+        href="/faq"
+        class="inline-flex items-center gap-2 rounded-md border border-white/40 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+      >
+        Lire la FAQ
+      </a>
+    </div>
   </section>
-
-  {
-    latestPosts.length > 0 && (
-      <section class="mt-20" aria-labelledby="latest-posts-heading">
-        <h2 id="latest-posts-heading" class="mb-6 text-2xl">
-          Dernières nouvelles
-        </h2>
-        <div class="flex flex-col gap-6">
-          {latestPosts.map((post) => (
-            <PostCard post={post} />
-          ))}
-        </div>
-      </section>
-    )
-  }
 </BaseLayout>

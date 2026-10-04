@@ -57,7 +57,11 @@ export default defineConfig({
     },
   },
   integrations: [
-    sitemap(),
+    sitemap({
+      // Legal pages are noindex: keep them out of the sitemap.
+      filter: (page) => !/\/(mentions-legales|confidentialite)\/?$/.test(page),
+      lastmod: new Date(),
+    }),
     mdx(),
     icon({
       include: {

@@ -9,11 +9,27 @@ Site vitrine de **LinkedinPostManager** (app macOS de programmation de posts Lin
 | `/` | Landing produit (`src/pages/index.astro`) |
 | `/fonctionnalites` | Tour complet (`src/content/page/fonctionnalites.mdx`) |
 | `/beta` | Formulaire de demande TestFlight (`src/pages/beta.astro` + `src/components/BetaForm.astro`) |
-| `/blog` | Actualités (`src/content/blog/`) |
+| `/faq` | Questions fréquentes (`src/data/faq.ts` → `src/pages/faq.astro`, avec données structurées FAQPage) |
 | `/journal` | Notes de version (`src/content/journal/`) — un fichier `.md` par build TestFlight |
 | `/confidentialite`, `/mentions-legales` | Pages légales (`src/content/page/`) |
 
 La configuration générale (titre, menu, email, URL) est dans `site.config.ts`.
+
+## Captures d'écran
+
+Les captures sont dans `src/assets/screenshots/` (copiées depuis la doc de l'app) et s'affichent via `src/components/Screenshot.astro` (cadre dégradé, largeur maîtrisée, zoom au clic). `vue-liste-recadree.png` est un recadrage de `vue-principale-publications.png` qui retire la colonne de détail vide et le titre de la fenêtre.
+
+## SEO et GEO
+
+- **Meta** (`src/layouts/BaseLayout.astro`) : canonical, robots (`noindex` sur 404 et pages légales), Open Graph / Twitter avec `public/og-image.png`.
+- **Données structurées** (`src/lib/seo.ts`) : Organization + WebSite sur toutes les pages, SoftwareApplication sur l'accueil, BreadcrumbList sur les pages internes, FAQPage sur `/faq`.
+- **Sitemap** : pages légales exclues. **robots.txt** : crawlers IA explicitement autorisés (GPTBot, ClaudeBot, PerplexityBot…).
+- **GEO** : `/llms.txt` (résumé) et `/llms-full.txt` (fonctionnalités + FAQ en texte intégral), générés à partir de `src/lib/seo.ts`, `src/data/faq.ts` et de la page Fonctionnalités : ils restent à jour automatiquement. Bloc « LinkedinPostManager en bref » sur l'accueil (faits clés citables).
+- **Image de partage** : régénérer avec `node scripts/generate-og-image.mjs` après un changement de capture.
+
+## Captures : mise à jour
+
+Copier les PNG de `Tools/LinkedinPostManager/documentation/screenshots/` dans `src/assets/screenshots/`, puis refaire les recadrages : `vue-liste-recadree.png` (996 px de large depuis la gauche, sans la colonne de détail vide), bas de page vide retiré sur `reglages-integration-macos.png` et `apercu-publication-avec-image.png`.
 
 ## Développement
 

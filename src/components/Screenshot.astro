@@ -1,0 +1,94 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  /** Max rendered width of the screenshot inside its frame, in px */
+  maxWidth?: number;
+  loading?: "eager" | "lazy";
+  /** Show the gradient backdrop around the screenshot */
+  framed?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  maxWidth = 640,
+  loading = "lazy",
+  framed = true,
+  class: className,
+} = Astro.props;
+
+const widths = [Math.round(maxWidth / 2), maxWidth, maxWidth * 2].filter(
+  (width) => width <= src.width,
+);
+---
+
+<figure class:list={["not-prose my-8", className]}>
+  <div
+    class:list={[
+      framed &&
+        "mx-auto w-fit max-w-full rounded-2xl bg-linear-to-br from-blue-100 via-sky-50 to-indigo-100 px-4 py-6 ring-1 ring-blue-900/5 ring-inset sm:px-10 sm:py-10 dark:from-blue-950/70 dark:via-gray-900 dark:to-indigo-950/70 dark:ring-white/5",
+    ]}
+  >
+    <button
+      type="button"
+      data-screenshot-zoom={src.src}
+      data-screenshot-alt={alt}
+      aria-label={`Agrandir : ${alt}`}
+      class="group relative mx-auto block max-w-full cursor-zoom-in"
+      style={`width: ${maxWidth}px`}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        widths={widths}
+        sizes={`(min-width: ${maxWidth + 64}px) ${maxWidth}px, 100vw`}
+        loading={loading}
+        class="!my-0 w-full rounded-xl drop-shadow-xl transition duration-300 group-hover:-translate-y-0.5 group-hover:drop-shadow-2xl"
+      />
+    </button>
+  </div>
+  {
+    caption && (
+      <figcaption class="mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
+        {caption}
+      </figcaption>
+    )
+  }
+</figure>
+
+<script>
+  const ensureDialog = () => {
+    let dialog = document.getElementById("screenshot-dialog");
+    if (dialog instanceof HTMLDialogElement) return dialog;
+
+    dialog = document.createElement("dialog");
+    dialog.id = "screenshot-dialog";
+    dialog.className =
+      "m-auto max-h-[92vh] max-w-[92vw] cursor-zoom-out bg-transparent p-0 backdrop:bg-gray-950/80 backdrop:backdrop-blur-sm";
+    dialog.innerHTML =
+      '<img class="max-h-[92vh] max-w-[92vw] rounded-xl object-contain" alt="" />';
+    dialog.addEventListener("click", () => (dialog as HTMLDialogElement).close());
+    document.body.append(dialog);
+    return dialog as HTMLDialogElement;
+  };
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLElement>("[data-screenshot-zoom]");
+    if (!trigger) return;
+
+    const dialog = ensureDialog();
+    const image = dialog.querySelector("img");
+    if (!image) return;
+    image.src = trigger.dataset.screenshotZoom ?? "";
+    image.alt = trigger.dataset.screenshotAlt ?? "";
+    dialog.showModal();
+  });
+</script>

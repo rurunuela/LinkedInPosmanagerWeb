@@ -15,7 +15,12 @@ const { page } = Astro.props;
 const { Content } = await render(page);
 ---
 
-<BaseLayout pageTitle={page.data.title}>
+<BaseLayout
+  pageTitle={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  breadcrumbs={[{ name: page.data.title, href: `/${page.id}` }]}
+>
   <header class="mb-8 border-b border-gray-300 pb-6 dark:border-gray-700">
     <h1>
       {page.data.title}

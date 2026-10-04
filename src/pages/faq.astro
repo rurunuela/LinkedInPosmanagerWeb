@@ -1,0 +1,100 @@
+---
+import siteConfig from "@config";
+import { Icon } from "astro-icon/components";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { faqGroups } from "../data/faq";
+
+const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "");
+
+const faqJsonLd = {
+  "@type": "FAQPage",
+  mainEntity: faqGroups.flatMap((group) =>
+    group.items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: stripHtml(item.answer) },
+    })),
+  ),
+};
+---
+
+<BaseLayout
+  pageTitle="FAQ"
+  description="Questions fréquentes sur LinkedinPostManager : bêta TestFlight, macOS 14.6, connexion LinkedIn, publication automatique et synchronisation iCloud."
+  breadcrumbs={[{ name: "FAQ", href: "/faq" }]}
+  jsonLd={[faqJsonLd]}
+>
+
+  <header class="mb-10 border-b border-gray-300 pb-8 dark:border-gray-700">
+    <h1>Questions fréquentes</h1>
+    <p
+      class="max-w-3xl text-base leading-relaxed text-gray-600 dark:text-gray-400"
+    >
+      Tout ce qu’il faut savoir avant de rejoindre la bêta. Vous ne trouvez pas
+      votre réponse ? Écrivez à{" "}
+      <a
+        href={`mailto:${siteConfig.email}`}
+        class="text-blue-600 hover:underline dark:text-blue-400"
+        >{siteConfig.email}</a
+      >.
+    </p>
+    <nav aria-label="Rubriques de la FAQ" class="mt-6 flex flex-wrap gap-2">
+      {
+        faqGroups.map((group, index) => (
+          <a
+            href={`#faq-${index}`}
+            class="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-blue-600 hover:text-blue-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+          >
+            <Icon name={group.icon} class="h-3.5 w-3.5" />
+            {group.title}
+          </a>
+        ))
+      }
+    </nav>
+  </header>
+
+  <div class="space-y-12">
+    {
+      faqGroups.map((group, index) => (
+        <section id={`faq-${index}`} class="scroll-mt-8">
+          <h2 class="flex items-center gap-3 text-2xl">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+              <Icon name={group.icon} class="h-5 w-5" />
+            </span>
+            {group.title}
+          </h2>
+          <div class="mt-4 divide-y divide-gray-200 rounded-lg border border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+            {group.items.map((item) => (
+              <details class="group px-5 [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold text-gray-900 transition-colors hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400">
+                  {item.question}
+                  <Icon
+                    name="lucide:chevron-down"
+                    class="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+                <div
+                  class="markdown-content pb-4 text-sm leading-relaxed"
+                  set:html={item.answer}
+                />
+              </details>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section
+    class="mt-14 rounded-lg bg-blue-600 p-8 text-center text-white dark:bg-blue-700"
+  >
+    <h2 class="text-2xl text-white dark:text-white">Prêt à essayer ?</h2>
+    <a
+      href="/beta"
+      class="mt-4 inline-flex items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50"
+    >
+      Rejoindre la bêta
+      <Icon name="lucide:arrow-right" class="h-4 w-4" />
+    </a>
+  </section>
+</BaseLayout>

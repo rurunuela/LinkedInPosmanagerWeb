@@ -23,7 +23,8 @@ const steps = [
 ] as const;
 
 const requirements = [
-  "Un Mac avec un compte iCloud actif, pour la synchronisation",
+  "Un Mac sous macOS 14.6 ou ultérieur",
+  "Un compte iCloud actif, pour la synchronisation",
   "L’app TestFlight, disponible gratuitement sur le Mac App Store",
   "Un compte LinkedIn",
   "Une application LinkedIn Developers (Client ID et Client Secret) : l’app vous guide pour la déclarer",
@@ -32,6 +33,7 @@ const requirements = [
 
 <BaseLayout
   pageTitle="Rejoindre la bêta"
+  breadcrumbs={[{ name: "Rejoindre la bêta", href: "/beta" }]}
   description="Demandez votre accès à la bêta TestFlight de LinkedinPostManager, l’application macOS pour programmer et publier sur LinkedIn."
 >
   <header class="mb-10 border-b border-gray-300 pb-8 dark:border-gray-700">
@@ -125,6 +127,12 @@ const requirements = [
           TestFlight et partager vos idées. Les données affichées peuvent
           évoluer d’une version à l’autre : gardez une copie de vos textes
           importants.
+        </p>
+        <p class="mt-5 text-sm text-gray-600 dark:text-gray-400">
+          D’autres questions ?
+          <a href="/faq" class="text-blue-600 hover:underline dark:text-blue-400"
+            >Consultez la FAQ</a
+          >.
         </p>
       </section>
 

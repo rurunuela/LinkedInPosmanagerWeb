@@ -95,7 +95,7 @@ export default defineConfig({
   nav: [
     { name: "Accueil", href: "/", icon: "lucide:home" },
     { name: "Fonctionnalités", href: "/fonctionnalites", icon: "lucide:layout-grid" },
-    { name: "Blog", href: "/blog", icon: "lucide:book-open" },
+    { name: "FAQ", href: "/faq", icon: "lucide:circle-help" },
     { name: "Versions", href: "/journal", icon: "lucide:calendar-days" },
     { name: "Bêta", href: "/beta", icon: "lucide:rocket" },
   ],
