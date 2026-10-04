@@ -66,6 +66,12 @@ LinkedinPostManager peut se lancer à l’ouverture de session et rester accessi
 
 Le menu de la barre des menus résume les publications du jour, signale les contenus en retard et ouvre la fenêtre principale ou les réglages.
 
+## Piloter l’application depuis Claude (MCP)
+
+LinkedinPostManager embarque un **serveur MCP** (Model Context Protocol). Un assistant compatible, comme **Claude Desktop** ou **Claude Code**, peut consulter les statistiques du calendrier, lister et lire vos publications, créer un brouillon ou programmer un post, et modifier un contenu non publié. Tout se retrouve dans l’application et sur vos autres Mac via iCloud.
+
+La publication reste sous le contrôle de l’application : le serveur MCP prépare et programme, le scheduler de LinkedinPostManager publie, selon vos règles. [Tout savoir sur l’intégration MCP →](/mcp)
+
 ## Connexion à LinkedIn
 
 La connexion passe par l’**OAuth officiel de LinkedIn**, et les publications sont envoyées directement à l’API LinkedIn : aucun automatisme de navigateur, aucune extraction de pages. Vous renseignez le Client ID et le Client Secret de votre application LinkedIn dans **Réglages > LinkedIn**. Ils sont conservés dans le Trousseau macOS. L’écran affiche aussi l’URI de redirection à déclarer dans LinkedIn Developers.

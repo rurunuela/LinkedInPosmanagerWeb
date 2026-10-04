@@ -74,7 +74,7 @@ export default defineConfig({
   lang: "fr",
   title: "LinkedinPostManager",
   description:
-    "L’application macOS pour préparer, programmer et publier vos contenus LinkedIn. Bêta ouverte sur TestFlight.",
+    "L’application macOS pour préparer, programmer et publier vos contenus LinkedIn, pilotable depuis Claude grâce à son serveur MCP. Bêta ouverte sur TestFlight.",
   author: "Hubo Soft",
   authorUrl: "https://www.hubosoft.fr",
   authorBio:
@@ -95,6 +95,7 @@ export default defineConfig({
   nav: [
     { name: "Accueil", href: "/", icon: "lucide:home" },
     { name: "Fonctionnalités", href: "/fonctionnalites", icon: "lucide:layout-grid" },
+    { name: "Claude & MCP", href: "/mcp", icon: "lucide:bot" },
     { name: "FAQ", href: "/faq", icon: "lucide:circle-help" },
     { name: "Versions", href: "/journal", icon: "lucide:calendar-days" },
     { name: "Bêta", href: "/beta", icon: "lucide:rocket" },

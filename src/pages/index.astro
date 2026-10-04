@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { productFacts, softwareApplication } from "../lib/seo";
 import Screenshot from "../components/Screenshot.astro";
+import McpDemo from "../components/McpDemo.astro";
 import agendaView from "../assets/screenshots/agenda-publications-mock.png";
 import listView from "../assets/screenshots/vue-liste-recadree.png";
 import postPreview from "../assets/screenshots/apercu-publication-avec-image.png";
@@ -63,7 +64,7 @@ const eyebrowClass =
 <BaseLayout
   pageTitle="Accueil"
   metaTitle="LinkedinPostManager : programmer et publier ses posts LinkedIn depuis un Mac"
-  description="LinkedinPostManager est une application macOS native (macOS 14.6+) pour rédiger, programmer et publier automatiquement vos posts LinkedIn via l’API officielle. Bêta ouverte sur TestFlight."
+  description="LinkedinPostManager est une application macOS native (macOS 14.6+) pour rédiger, programmer et publier automatiquement vos posts LinkedIn via l’API officielle, et la piloter depuis Claude grâce à son serveur MCP. Bêta ouverte sur TestFlight."
   jsonLd={[softwareApplication()]}
 >
   <section class="text-center">
@@ -81,7 +82,7 @@ const eyebrowClass =
     >
       LinkedinPostManager est une application macOS native qui réunit vos
       brouillons, votre calendrier éditorial et la publication automatique au
-      même endroit.
+      même endroit. Et vous pouvez la piloter depuis Claude.
     </p>
     <div class="mt-8 flex flex-wrap justify-center gap-3">
       <a
@@ -99,7 +100,8 @@ const eyebrowClass =
       </a>
     </div>
     <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">
-      macOS 14.6 ou ultérieur · API officielles LinkedIn et Apple
+      macOS 14.6 ou ultérieur · API officielles LinkedIn et Apple · Serveur
+      MCP intégré
     </p>
 
     <div
@@ -127,6 +129,55 @@ const eyebrowClass =
         >{" "}et l’aperçu d’un post avant publication</span
       >{" "}(données de démonstration).
     </p>
+  </section>
+
+  <section
+    class="mt-20 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"
+    aria-labelledby="mcp-heading"
+  >
+    <div>
+      <p class={eyebrowClass}>
+        <span
+          class="mr-2 rounded-full bg-blue-600 px-2 py-0.5 text-[10px] tracking-wider text-white dark:bg-blue-500"
+          >Nouveau</span
+        >Claude &amp; MCP
+      </p>
+      <h2 id="mcp-heading" class="mt-3">
+        Demandez à Claude de gérer votre calendrier LinkedIn
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400">
+        LinkedinPostManager intègre un serveur MCP (Model Context Protocol).
+        Depuis Claude Desktop, Claude Code ou un autre client compatible, votre
+        assistant consulte vos publications, rédige des brouillons et programme
+        vos posts, directement dans l’application.
+      </p>
+      <ul class="mt-5 space-y-3">
+        {
+          [
+            "Statistiques, prochaine publication et contenus en retard",
+            "Création et programmation de posts, avec tags et média",
+            "Modification des contenus non publiés",
+            "La publication reste faite par l’app, selon vos règles",
+          ].map((item) => (
+            <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+              <Icon
+                name="lucide:circle-check"
+                class="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400"
+              />
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <a
+        href="/mcp"
+        class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400"
+      >
+        Découvrir l’intégration MCP
+        <Icon name="lucide:arrow-right" class="h-4 w-4" />
+      </a>
+    </div>
+    <McpDemo />
   </section>
 
   <section class="mt-20" aria-labelledby="features-heading">
@@ -247,6 +298,7 @@ const eyebrowClass =
           ["Statut", productFacts.status],
           ["Éditeur", `${productFacts.publisher} (La Chapelle-sur-Erdre, France)`],
           ["Connexion LinkedIn", "OAuth et API officiels de LinkedIn, sans automatisation de navigateur"],
+          ["Assistant IA", "Serveur MCP intégré, compatible Claude Desktop et Claude Code"],
           ["Données", "Trousseau macOS pour les identifiants, base iCloud privée pour les publications"],
         ].map(([term, value]) => (
           <div class="bg-white p-4 dark:bg-gray-900">

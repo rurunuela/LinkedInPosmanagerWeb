@@ -6,19 +6,24 @@ import { llmsFaq, llmsSummary } from "../lib/llms";
 const toPlainMarkdown = (source: string) =>
   source
     .replace(/^import .*$/gm, "")
-    .replace(/<Screenshot[^>]*\/>/g, "")
+    .replace(/<(Screenshot|McpDemo)[^>]*\/>/g, "")
     .replace(/<\/?small>/g, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 
 export const GET: APIRoute = async () => {
   const features = await getEntry("page", "fonctionnalites");
+  const mcp = await getEntry("page", "mcp");
 
   const content = [
     llmsSummary(),
     "## Fonctionnalités détaillées",
     "",
     toPlainMarkdown(features?.body ?? ""),
+    "",
+    "## Serveur MCP (Claude)",
+    "",
+    toPlainMarkdown(mcp?.body ?? ""),
     "",
     "## FAQ",
     "",

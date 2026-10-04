@@ -1,0 +1,71 @@
+---
+title: "Piloter LinkedIn avec Claude grâce au MCP"
+description: "LinkedinPostManager intègre un serveur MCP (Model Context Protocol) : Claude Desktop, Claude Code ou tout client compatible peuvent consulter, rédiger et programmer vos posts LinkedIn, sous le contrôle de l’application."
+---
+
+import McpDemo from "../../components/McpDemo.astro";
+
+LinkedinPostManager embarque un serveur **Model Context Protocol (MCP)**. Un assistant compatible, comme **Claude Desktop** ou **Claude Code**, travaille directement sur le même calendrier éditorial que l’application : vous lui demandez ce qui est prévu cette semaine, de rédiger un brouillon ou de programmer un post, et le résultat apparaît dans LinkedinPostManager.
+
+<McpDemo class="my-8" />
+
+## Ce que l’assistant peut faire
+
+- obtenir les statistiques du calendrier éditorial et identifier la prochaine publication ;
+- lister les brouillons et les publications planifiées, publiées ou en échec ;
+- consulter le contenu complet d’une publication ;
+- créer un brouillon, ou programmer une publication à une date précise ;
+- joindre une image ou un document lors de la création ;
+- associer des tags déjà présents dans l’application ;
+- modifier le titre, le texte ou la date d’un contenu non publié ;
+- retirer et archiver une publication, après confirmation explicite.
+
+## Les outils MCP
+
+| Outil | Fonction |
+| --- | --- |
+| `get_post_stats` | Compteurs, contenus en retard et prochaine publication. |
+| `list_posts` | Liste des publications, avec filtre facultatif par statut. |
+| `get_post` | Détail d’une publication, à partir de son UUID ou d’un préfixe non ambigu. |
+| `create_post` | Crée un brouillon ou une publication planifiée, avec tags et média facultatifs. |
+| `update_post` | Modifie un brouillon, un contenu planifié ou une publication en échec. |
+| `delete_post` | Archive une publication après réception de `confirm=true`. |
+
+## L’application garde la main sur la publication
+
+Le serveur MCP **prépare et programme** les contenus, mais il ne publie jamais directement sur LinkedIn. C’est le scheduler de LinkedinPostManager qui effectue l’envoi, avec votre session LinkedIn et les règles définies dans **Réglages > Serveur** (espacement, tolérance de retard, rattrapage). Un assistant ne peut donc pas contourner vos règles de connexion, de stockage ou de rythme de publication.
+
+Le serveur communique avec le client en **stdio** (JSON-RPC) et lit et écrit les mêmes documents iCloud que l’application : ce que l’assistant crée apparaît dans LinkedinPostManager et sur vos autres Mac après synchronisation. L’assistant reçoit des fonctions structurées, pas un accès libre à votre Mac ni à l’interface.
+
+## Garde-fous
+
+- Le texte est limité à 3 000 caractères.
+- Une date de programmation doit être valide et située dans le futur.
+- Une publication déjà publiée ne peut pas être modifiée via MCP.
+- Une image et un document ne peuvent pas être joints en même temps.
+- Les tags inconnus sont ignorés et signalés dans la réponse.
+- La suppression exige `confirm=true` et archive le document, qui reste récupérable.
+- Supprimer une entrée dans LinkedinPostManager ne supprime jamais un post déjà publié sur LinkedIn.
+
+## Configuration
+
+Si l’application est installée dans `/Applications`, ajoutez ce serveur à la configuration de votre client MCP (par exemple `claude_desktop_config.json` pour Claude Desktop) :
+
+```json
+{
+  "mcpServers": {
+    "linkedin-post-manager": {
+      "command": "/Applications/LinkedinPostManager.app/Contents/Helpers/LPMMCPHelper.app/Contents/MacOS/LPMMCPHelper",
+      "args": []
+    }
+  }
+}
+```
+
+Adaptez le chemin si l’application est installée ailleurs, puis relancez le client MCP pour qu’il prenne en compte la nouvelle configuration.
+
+Tout client capable de lancer un serveur MCP local en transport stdio peut théoriquement l’utiliser ; le serveur a principalement été conçu et testé avec Claude Desktop et Claude Code.
+
+---
+
+Le serveur MCP est inclus dans la bêta. [Rejoignez la bêta TestFlight →](/beta) · [Questions fréquentes sur le MCP](/faq#faq-mcp)

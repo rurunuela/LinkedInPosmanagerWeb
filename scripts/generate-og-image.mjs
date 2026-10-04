@@ -20,7 +20,7 @@ const background = Buffer.from(`
     <text x="64" y="190" font-size="52" font-weight="800">LinkedinPostManager</text>
     <text x="64" y="258" font-size="30" font-weight="500" fill-opacity="0.92">Préparez, programmez et publiez</text>
     <text x="64" y="300" font-size="30" font-weight="500" fill-opacity="0.92">vos posts LinkedIn depuis votre Mac.</text>
-    <text x="64" y="560" font-size="20" fill-opacity="0.75">App macOS native · macOS 14.6+ · par Hubo Soft</text>
+    <text x="64" y="560" font-size="20" fill-opacity="0.75">App macOS native · Serveur MCP pour Claude · par Hubo Soft</text>
   </g>
 </svg>`);
 

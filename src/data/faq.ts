@@ -5,6 +5,8 @@ export interface FaqItem {
 }
 
 export interface FaqGroup {
+  /** Anchor id, e.g. "mcp" → /faq#faq-mcp */
+  id: string;
   title: string;
   icon: string;
   items: FaqItem[];
@@ -12,6 +14,7 @@ export interface FaqGroup {
 
 export const faqGroups: FaqGroup[] = [
   {
+    id: "beta",
     title: "Bêta et TestFlight",
     icon: "lucide:flask-conical",
     items: [
@@ -44,6 +47,39 @@ export const faqGroups: FaqGroup[] = [
     ],
   },
   {
+    id: "mcp",
+    title: "Assistant IA et MCP",
+    icon: "lucide:bot",
+    items: [
+      {
+        question: "Qu’est-ce que l’intégration MCP ?",
+        answer:
+          "MCP (Model Context Protocol) est le protocole qui permet à un assistant IA compatible, comme Claude Desktop ou Claude Code, de découvrir et d’appeler les outils fournis par LinkedinPostManager : statistiques, liste et détail des posts, création, modification et archivage. L’assistant reçoit des fonctions structurées plutôt qu’un accès libre au Mac ou à l’interface. Tous les détails sont sur la page <a href=\"/mcp\">Claude et MCP</a>.",
+      },
+      {
+        question: "Est-ce que MCP peut publier immédiatement sur LinkedIn ?",
+        answer:
+          "Non. Le serveur MCP crée et organise les contenus, mais il ne publie pas directement. Une publication programmée est envoyée par le scheduler de l’application, avec votre session LinkedIn et les règles configurées dans <strong>Réglages &gt; Serveur</strong>.",
+      },
+      {
+        question: "Quels clients peuvent utiliser le serveur MCP ?",
+        answer:
+          "Tout client qui prend en charge les serveurs MCP locaux en transport stdio peut théoriquement l’utiliser. Le serveur a principalement été conçu pour Claude Desktop et Claude Code.",
+      },
+      {
+        question: "Les modifications réalisées par MCP sont-elles synchronisées ?",
+        answer:
+          "Oui, lorsque le stockage iCloud Documents est actif. Le serveur MCP lit et écrit les mêmes documents que l’application : les changements apparaissent dans LinkedinPostManager et sur vos autres Mac après la synchronisation iCloud.",
+      },
+      {
+        question: "Un assistant peut-il supprimer mes posts LinkedIn ?",
+        answer:
+          "Non. La suppression via MCP exige une confirmation explicite (<code>confirm=true</code>) et archive simplement le contenu dans l’application, qui reste récupérable. Elle ne supprime jamais un post déjà publié sur LinkedIn, et un contenu publié ne peut pas être modifié via MCP.",
+      },
+    ],
+  },
+  {
+    id: "linkedin",
     title: "Connexion à LinkedIn",
     icon: "lucide:link",
     items: [
@@ -65,6 +101,7 @@ export const faqGroups: FaqGroup[] = [
     ],
   },
   {
+    id: "redaction",
     title: "Rédaction et publication",
     icon: "lucide:pen-line",
     items: [
@@ -91,6 +128,7 @@ export const faqGroups: FaqGroup[] = [
     ],
   },
   {
+    id: "automatisation",
     title: "Automatisation et synchronisation",
     icon: "lucide:cloud",
     items: [

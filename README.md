@@ -9,6 +9,7 @@ Site vitrine de **LinkedinPostManager** (app macOS de programmation de posts Lin
 | `/` | Landing produit (`src/pages/index.astro`) |
 | `/fonctionnalites` | Tour complet (`src/content/page/fonctionnalites.mdx`) |
 | `/beta` | Formulaire de demande TestFlight (`src/pages/beta.astro` + `src/components/BetaForm.astro`) |
+| `/mcp` | Serveur MCP / pilotage depuis Claude (`src/content/page/mcp.mdx` + `src/components/McpDemo.astro`) |
 | `/faq` | Questions fréquentes (`src/data/faq.ts` → `src/pages/faq.astro`, avec données structurées FAQPage) |
 | `/journal` | Notes de version (`src/content/journal/`) — un fichier `.md` par build TestFlight |
 | `/confidentialite`, `/mentions-legales` | Pages légales (`src/content/page/`) |

@@ -23,7 +23,7 @@ export const softwareId = `${siteUrl}/#software`;
 export const productFacts = {
   name: siteConfig.title,
   summary:
-    "Application macOS native pour préparer, organiser, programmer et publier des contenus sur LinkedIn.",
+    "Application macOS native pour préparer, organiser, programmer et publier des contenus sur LinkedIn, avec un serveur MCP intégré pour la piloter depuis Claude.",
   platform: "macOS 14.6 ou ultérieur",
   status: "Bêta publique sur invitation via TestFlight",
   publisher: siteConfig.publisher.name,
@@ -37,6 +37,7 @@ export const productFacts = {
     "Synchronisation iCloud (CloudKit) des publications, tags et médias",
     "Accès depuis le Dock et la barre des menus de macOS",
     "Connexion via l’OAuth et l’API officiels de LinkedIn, identifiants dans le Trousseau macOS",
+    "Serveur MCP (Model Context Protocol) intégré : Claude Desktop, Claude Code ou tout client MCP stdio peut consulter, créer, modifier et programmer les publications",
   ],
 } as const;
 
@@ -74,6 +75,8 @@ export function softwareApplication() {
     description: productFacts.summary,
     applicationCategory: "BusinessApplication",
     applicationSubCategory: "Gestion des réseaux sociaux",
+    keywords:
+      "LinkedIn, programmation de posts, calendrier éditorial, macOS, MCP, Model Context Protocol, Claude",
     operatingSystem: "macOS 14.6 ou ultérieur",
     softwareVersion: "Bêta",
     inLanguage: "fr-FR",
