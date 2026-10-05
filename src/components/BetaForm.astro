@@ -2,6 +2,7 @@
 import siteConfig from "@config";
 import {
   PUBLIC_BETA_FORM_ENDPOINT,
+  PUBLIC_CONTACT_FORM_ENDPOINT,
   PUBLIC_TURNSTILE_SITE_KEY,
 } from "astro:env/client";
 
@@ -17,7 +18,8 @@ const {
   class: className,
 } = Astro.props;
 
-const endpoint = PUBLIC_BETA_FORM_ENDPOINT ?? "";
+// Dedicated beta Worker first, then the shared Hubo Soft contact Worker.
+const endpoint = PUBLIC_BETA_FORM_ENDPOINT || PUBLIC_CONTACT_FORM_ENDPOINT || "";
 const turnstileSiteKey = PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const hasTurnstile = Boolean(turnstileSiteKey);
 const turnstileContainerId = "beta-turnstile-widget";
@@ -113,6 +115,9 @@ const fieldClass =
   <div class="hidden" aria-hidden="true">
     <input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
   </div>
+
+  <!-- Required by the shared Hubo Soft contact Worker; ignored by beta-mailer -->
+  <input type="hidden" name="need" value="Accès bêta LinkedinPostManager (TestFlight)" />
 
   {
     hasTurnstile && (
@@ -269,6 +274,18 @@ const fieldClass =
       }
 
       const formData = new FormData(form);
+      // Self-explanatory email body, and always long enough for the shared
+      // contact Worker (message >= 10 characters).
+      const userMessage = String(formData.get("message") || "").trim();
+      formData.set(
+        "message",
+        [
+          "Demande d’accès à la bêta TestFlight de LinkedinPostManager.",
+          "Consentement RGPD : oui.",
+          "",
+          userMessage ? `Message :\n${userMessage}` : "(aucun message)",
+        ].join("\n"),
+      );
       if (
         document.getElementById(TURNSTILE_CONTAINER_ID) &&
         !formData.get("cf-turnstile-response")

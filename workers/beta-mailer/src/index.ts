@@ -70,7 +70,7 @@ function validatePayload(payload: BetaRequestPayload): Record<string, string[]> 
     errors.email = ['Veuillez saisir une adresse email valide'];
   }
 
-  if (payload.message.length > 3000) {
+  if (payload.message.length > 3500) {
     errors.message = ['Le message est trop long (3 000 caractères maximum)'];
   }
 

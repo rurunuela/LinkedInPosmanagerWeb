@@ -49,6 +49,12 @@ export default defineConfig({
         access: "public",
         optional: true,
       }),
+      // Same variable name as the Hubo Soft site: lets both sites share the contact Worker.
+      PUBLIC_CONTACT_FORM_ENDPOINT: envField.string({
+        context: "client",
+        access: "public",
+        optional: true,
+      }),
       PUBLIC_TURNSTILE_SITE_KEY: envField.string({
         context: "client",
         access: "public",
